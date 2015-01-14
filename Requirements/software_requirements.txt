@@ -13,7 +13,6 @@ Program Requirements:
 	2. Functional Requirement: 
 		A. Robot Drive
 			I. Forward/Backward movement
-			I.V My sister was once bitten by a moose.
 				a.both sides moving at the same rate in the same direction
 			II. Turning capablilities
 				a. both sides moving forward at different rates
