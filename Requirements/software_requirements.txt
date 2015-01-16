@@ -1,0 +1,37 @@
+Program Requirements:
+1. Functional Areas:
+		A. Robot Drive 
+			I. Left Side
+			II. Right Side
+		B. Elevator
+			I. Raise (Amount)
+			II. Lower (Amount)
+		C. Grabber
+			I. Grab (boolean value)
+		D. Arm Extender
+			I. Extend (boolean value)
+	2. Functional Requirement: 
+		A. Robot Drive
+			I. Forward/Backward movement
+				a.both sides moving at the same rate in the same direction
+			II. Turning capablilities
+				a. both sides moving forward at different rates
+			III. Rotational movement
+				a. both sides moving at the same rate in opposite directions.
+			IV. Throttle Control
+				a. throttle control will allow user to adjust sensitivity of user input. 
+		B. Elevator
+			I.Raise (Amount)
+				a. Use limit switches until the totes/bins reach max height
+			I.Lower (Amount)
+				a. Use limit switches until the totes/bins reach min height
+		C. Grabber
+			I. Set Grabber (true for closed, false for open)- input from button
+		D. Extender 	
+			I. Set Extender (true for extended, false for retracted)- input from button
+
+	3. Programming "Wants"
+		I. Motor stall detection on servo and drive motors
+		II. Ramp up/Ramp down on robot speed
+		III. Method of robot control as relative to the driver controll station
+	
