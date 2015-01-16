@@ -7,11 +7,12 @@ private:
 	RobotDrive *myRobot;
 	Joystick *stick;
 	Joystick *RotStick;
-
+	Solenoid *Sol;
 	Victor *vic1;
 	Victor *vic2;
 	Victor *vic3;
 	Victor *vic4;
+	Compressor *comp;
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
@@ -38,6 +39,11 @@ private:
 		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		//stick= new Joystick(0);
 		stick = new Joystick(0);
+		//comp= new Compressor();
+		//comp->Start();
+		//Sol= new Solenoid(0);
+		//Sol->Set(true);
+
 
 
 
