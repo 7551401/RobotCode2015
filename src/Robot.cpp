@@ -41,8 +41,9 @@ private:
 		stick = new Joystick(0);
 		//comp= new Compressor();
 		//comp->Start();
-		//Sol= new Solenoid(0);
+		Sol= new DoubleSolenoid(0,0,0);
 		//Sol->Set(true);
+		Sol->Set(false);
 
 
 
