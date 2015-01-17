@@ -7,12 +7,14 @@ private:
 	RobotDrive *myRobot;
 	Joystick *stick;
 	Joystick *RotStick;
-	Solenoid *Sol;
+	DoubleSolenoid *Sol;
 	Victor *vic1;
 	Victor *vic2;
 	Victor *vic3;
 	Victor *vic4;
 	Compressor *comp;
+	JoystickButton *button1;
+	JoystickButton *button2;
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
@@ -39,10 +41,13 @@ private:
 		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		//stick= new Joystick(0);
 		stick = new Joystick(0);
-		//comp= new Compressor();
-		//comp->Start();
-		//Sol= new Solenoid(0);
-		//Sol->Set(true);
+		comp= new Compressor();
+		comp->Start();
+		Sol= new DoubleSolenoid(0,0,0);
+		bool isPressed= false;
+
+		button1= new JoystickButton(stick,1);
+		button2= new JoystickButton(stick,2);
 
 
 
@@ -92,6 +97,9 @@ private:
 		//SmartDashboard::PutNumber("RotStick->DirectionDegrees", RotStick->GetTwist());
 		//SmartDashboard::PutNumber("stick->DirectionDegrees", stick->GetDirectionDegrees());
 		//SmartDashboard::PutNumber("RotStick->GetMag",RotStick->GetMagnitude());
+
+
+
 	}
 
 	void TestPeriodic()
