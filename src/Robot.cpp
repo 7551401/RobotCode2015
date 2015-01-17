@@ -45,6 +45,7 @@ private:
 		comp->Start();
 		Sol= new DoubleSolenoid(0,0,0);
 		bool isPressed= false;
+		Sol->Set(DoubleSolenoid::Value::kForward);
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
