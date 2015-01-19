@@ -3,11 +3,11 @@
 class Robot: public IterativeRobot
 {
 private:
-	LiveWindow *lw;
-	RobotDrive *myRobot;
-	Joystick *stick;
-	Joystick *RotStick;
-	DoubleSolenoid *Sol;
+	LiveWindow *lw; //references LiveWindow class
+	RobotDrive *myRobot; //references RobotDrive class
+	Joystick *stick; //references Joystick class; stick used for forward and backward movement
+	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	Victor *vic1;
 	Victor *vic2;
 	Victor *vic3;
@@ -40,12 +40,12 @@ private:
 		myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		//stick= new Joystick(0);
-		stick = new Joystick(0);
-		comp= new Compressor();
-		comp->Start();
-		Sol= new DoubleSolenoid(0,0,0);
-		bool isPressed= false;
-		Sol->Set(DoubleSolenoid::Value::kForward);
+		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
+		comp= new Compressor(); //Creates a new Compressor to Compress air
+		comp->Start(); //Starts Compressor
+		Sol= new DoubleSolenoid(0,0,0); //Creates a new DoubleSolenoid with parameters of 0 for the port
+		bool isPressed= false; //Unused as of right now
+		Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
@@ -82,17 +82,19 @@ private:
 
 		//float throttle = (((stick->GetThrottle()+1)*0.4)+.2);
 		//float magnitude=stick->GetMagnitude();
-		/*if (magnitude<0.08){
-			magnitude=0;*/
+		//if (magnitude<0.08){
+			//magnitude=0;
 		//}
 		//float direction= RotStick->GetTwist();
 		//if (direction<.2 && direction>-.2){
 			//direction=0;
 		//}
 		//direction*=.75;
-		float throttle = stick->GetThrottle();
-		throttle = ((throttle+1) *.25) + .5;
-		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true);
+		/**/
+		float throttle = stick->GetThrottle(); //Declares throttle as the sticks throttle value
+		throttle = ((throttle+1) *.25) + .5; //Scales the throttle value to a useful value (.5 - 1)
+		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true); //Scales the Joystick values by the throttle value
+
 		//SmartDashboard::PutNumber("Mag:", magnitude);
 		//SmartDashboard::PutNumber("Dir:", direction);
 		//SmartDashboard::PutNumber("RotStick->DirectionDegrees", RotStick->GetTwist());
@@ -105,7 +107,7 @@ private:
 
 	void TestPeriodic()
 	{
-		lw->Run();
+		lw->Run(); //Runs LiveWindow
 	}
 };
 
