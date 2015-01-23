@@ -3,6 +3,7 @@
 class Robot: public IterativeRobot
 {
 private:
+	Encoder *encoder;
 	LiveWindow *lw; //references LiveWindow class
 	RobotDrive *myRobot; //references RobotDrive class
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
@@ -46,6 +47,7 @@ private:
 		Sol= new DoubleSolenoid(0,0,0); //Creates a new DoubleSolenoid with parameters of 0 for the port
 		bool isPressed= false; //Unused as of right now
 		Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
+		encoder = new Encoder (1, 2, true, CounterBase:: k2X);
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
@@ -72,6 +74,7 @@ private:
 
 	void TeleopPeriodic()
 	{
+
 		//myRobot->ArcadeDrive(stick, Joystick::kDefaultYAxis, stick, Joystick::kDefaultTwistAxis, true);
 		//myRobot->Drive(ThroStick->GetThrottle(), ThroStick->GetThrottle());
 		//vic1->Set((((ThroStick->GetThrottle()+1)*.4)+.2),0);
@@ -94,7 +97,7 @@ private:
 		float throttle = stick->GetThrottle(); //Declares throttle as the sticks throttle value
 		throttle = ((throttle+1) *.25) + .5; //Scales the throttle value to a useful value (.5 - 1)
 		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true); //Scales the Joystick values by the throttle value
-
+		SmartDashboard::PutNumber("Encoder Value", encoder->Get());
 		//SmartDashboard::PutNumber("Mag:", magnitude);
 		//SmartDashboard::PutNumber("Dir:", direction);
 		//SmartDashboard::PutNumber("RotStick->DirectionDegrees", RotStick->GetTwist());
