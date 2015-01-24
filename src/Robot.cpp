@@ -1,4 +1,4 @@
-#include "WPILib.h"
+#include "WPILib.h"uu
 
 class Robot: public IterativeRobot
 {
@@ -54,7 +54,6 @@ private:
 
 
 
-
 	}
 
 	void AutonomousInit()
@@ -63,8 +62,6 @@ private:
 	}
 
 	void AutonomousPeriodic()
-	{
-
 	}
 
 	void TeleopInit()
