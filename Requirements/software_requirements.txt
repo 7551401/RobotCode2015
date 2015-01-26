@@ -1,4 +1,5 @@
 Program Requirements:
+
 1. Functional Areas:
 		A. Robot Drive 
 			I. Left Side
@@ -10,6 +11,7 @@ Program Requirements:
 			I. Grab (boolean value)
 		D. Arm Extender
 			I. Extend (boolean value)
+
 	2. Functional Requirement: 
 		A. Robot Drive
 			I. Forward/Backward movement
@@ -23,8 +25,10 @@ Program Requirements:
 		B. Elevator
 			I.Raise (Amount)
 				a. Use limit switches until the totes/bins reach max height
-			I.Lower (Amount)
+			II.Lower (Amount)
 				a. Use limit switches until the totes/bins reach min height
+			III. Device to raise crates 
+				a. see 4a
 		C. Grabber
 			I. Set Grabber (true for closed, false for open)- input from button
 		D. Extender 	
@@ -34,4 +38,18 @@ Program Requirements:
 		I. Motor stall detection on servo and drive motors
 		II. Ramp up/Ramp down on robot speed
 		III. Method of robot control as relative to the driver controll station
+		IV. Proximity detector
+			a. Laser
+			b. Sonar (sound)
+	4. Autonomous/Driver Options
+		A. Auto throttle scaling depending on height of stack, six limit switches
+			I. Height of target stack
+			II. Height of carried stack
+			III. Distance of target stack
+			IV. No crates, bool = false, Get stackheight()
+			V. Binary values for stack height (limit switches)
+			VI. Get carried HandPos 
+			VII. Get Target Height
+			VIII. Set elevator height  Dew you werna build a shnewman?
+			IX. See 3(IV). 
 	
