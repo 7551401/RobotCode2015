@@ -17,6 +17,17 @@ private:
 	JoystickButton *button1;
 	JoystickButton *button2;
 	JoystickButton *button3;
+	Timer *timer;
+	AxisCamera *camera;
+	Image *frame;
+	double getThrottle(double val){
+	 float throttle = stick->GetThrottle();
+	 throttle++;
+	 throttle = throttle *((1-val)/2);
+	 throttle+= val;
+	 return throttle;
+
+	}
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
@@ -24,15 +35,12 @@ private:
 		vic2= new Victor(2);
 		vic3= new Victor(1);
 		vic4= new Victor(0);
-		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);/*possibly make two objects:
-		a left and right robot for each analog stick on an x-box controller?
-		This would allow for the sticks to be used in opposite directions and
-		be able to avoid a GetTwist() method.
-		*/
+		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
+		std::string str= "192.168.0.90";
+		camera= new AxisCamera(str);
+		frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
 
-		//stick1= new Joystick(0);
-		//stick2= new Joystick(1);
-		//myRobot= new RobotDrive(3,2,1,0);
+
 
 
 
@@ -46,9 +54,9 @@ private:
 		comp= new Compressor(); //Creates a new Compressor to Compress air
 		comp->Start(); //Starts Compressor
 		Sol= new DoubleSolenoid(0,0,1); //Creates a new DoubleSolenoid with parameters of 0 for the port
-		bool isPressed= false; //Unused as of right now
+
 		Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
-		encoder = new Encoder (1, 2, true, CounterBase:: k2X);
+		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
@@ -60,12 +68,14 @@ private:
 
 	void AutonomousInit()
 	{
-
+		timer->Start();
 	}
 
 	void AutonomousPeriodic()
 	{
-
+		if (timer->Get()<=4){
+			myRobot->ArcadeDrive(1.0,0.0, true);
+		}
 	}
 
 	void TeleopInit()
@@ -76,41 +86,22 @@ private:
 	void TeleopPeriodic()
 	{
 
-		//myRobot->ArcadeDrive(stick, Joystick::kDefaultYAxis, stick, Joystick::kDefaultTwistAxis, true);
-		//myRobot->Drive(ThroStick->GetThrottle(), ThroStick->GetThrottle());
-		//vic1->Set((((ThroStick->GetThrottle()+1)*.4)+.2),0);
-		//vic2->Set((((ThroStick->GetThrottle()+1)*.4)+.2),0);
-		//vic3->Set((((ThroStick->GetThrottle()+1)*.4)+.2),0);
-		//vic4->Set((((ThroStick->GetThrottle()+1)*.4)+.2),0);
 
-
-		//float throttle = (((stick->GetThrottle()+1)*0.4)+.2);
-		//float magnitude=stick->GetMagnitude();
-		//if (magnitude<0.08){
-			//magnitude=0;
-		//}
-		//float direction= RotStick->GetTwist();
-		//if (direction<.2 && direction>-.2){
-			//direction=0;
-		//}
-		//direction*=.75;
-		/**/
-		float throttle = stick->GetThrottle(); //Declares throttle as the sticks throttle value
-		throttle = ((throttle+1) *.25) + .5; //Scales the throttle value to a useful value (.5 - 1)
+		float throttle = getThrottle(.5);
 		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true); //Scales the Joystick values by the throttle value
-		SmartDashboard::PutNumber("Encoder Value", encoder->Get());
-		//SmartDashboard::PutNumber("Mag:", magnitude);
-		//SmartDashboard::PutNumber("Dir:", direction);
-		//SmartDashboard::PutNumber("RotStick->DirectionDegrees", RotStick->GetTwist());
-		//SmartDashboard::PutNumber("stick->DirectionDegrees", stick->GetDirectionDegrees());
-		//SmartDashboard::PutNumber("RotStick->GetMag",RotStick->GetMagnitude());
+		SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
+		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
+		SmartDashboard::PutNumber("Color Value: ", camera->GetColorLevel());
+		SmartDashboard::PutNumber("Brightness: ", camera->GetBrightness());
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
 		}
 		if (stick->GetRawButton(6)) {
 					Sol->Set(DoubleSolenoid::kReverse);
 				}
-
+		camera->GetImage(frame);
+		imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
+		CameraServer::GetInstance()->SetImage(frame);
 
 
 	}
