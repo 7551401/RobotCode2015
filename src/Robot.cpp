@@ -1,5 +1,6 @@
 #include "WPILib.h"
 
+
 class Robot: public IterativeRobot
 {
 private:
@@ -18,8 +19,12 @@ private:
 	JoystickButton *button2;
 	JoystickButton *button3;
 	Timer *timer;
-	AxisCamera *camera;
-	Image *frame;
+	int i=0;
+	double y=0;
+	double total=0.0;
+	//AxisCamera *camera;
+	//Image *frame;
+	AnalogInput *input;
 	double getThrottle(double val){
 	 float throttle = stick->GetThrottle();
 	 throttle++;
@@ -37,8 +42,8 @@ private:
 		vic4= new Victor(0);
 		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 		std::string str= "192.168.0.90";
-		camera= new AxisCamera(str);
-		frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
+		//camera= new AxisCamera(str);
+		//frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
 
 
 
@@ -63,6 +68,7 @@ private:
 		button3= new JoystickButton(stick,3);
 
 
+		input= new AnalogInput(0);
 
 	}
 
@@ -73,8 +79,20 @@ private:
 
 	void AutonomousPeriodic()
 	{
-		if (timer->Get()<=4){
-			myRobot->ArcadeDrive(1.0,0.0, true);
+		double voltage= input->GetVoltage();
+		double dis= voltage*1000;
+		dis/=9.766;
+		dis/=12;
+		SmartDashboard::PutNumber("voltage", voltage);
+		i+=1;
+		total= total+ dis;
+		if (i%10==0){
+			total/=10;
+			SmartDashboard::PutNumber("Feet Away", dis);
+			total=0;
+				}
+		if ((dis)<=0.5)	{
+			myRobot->ArcadeDrive(1.0,0.0,true);
 		}
 	}
 
@@ -91,18 +109,25 @@ private:
 		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true); //Scales the Joystick values by the throttle value
 		SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
 		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
-		SmartDashboard::PutNumber("Color Value: ", camera->GetColorLevel());
-		SmartDashboard::PutNumber("Brightness: ", camera->GetBrightness());
+		//SmartDashboard::PutNumber("Color Value: ", camera->GetColorLevel());
+		//SmartDashboard::PutNumber("Brightness: ", camera->GetBrightness());
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
 		}
 		if (stick->GetRawButton(6)) {
 					Sol->Set(DoubleSolenoid::kReverse);
 				}
-		camera->GetImage(frame);
-		imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
-		CameraServer::GetInstance()->SetImage(frame);
-
+		//camera->GetImage(frame);
+		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
+		//CameraServer::GetInstance()->SetImage(frame);
+		double voltage= input->GetVoltage();
+		double dis= voltage*1000;
+		dis/=9.766;
+		dis/=12;
+		SmartDashboard::PutNumber("voltage", voltage);
+		y=y+(.01*(dis-y));
+		SmartDashboard::PutNumber("Feet Away: ", y);
+			total=0;
 
 	}
 
