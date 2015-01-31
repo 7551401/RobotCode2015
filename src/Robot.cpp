@@ -46,7 +46,9 @@ private:
 		//frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
 
 
-
+		CameraServer::GetInstance()->SetQuality(50);
+				//the camera name (ex "cam0") can be found through the roborio web interface
+				CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
 
 		//Motors are inverted because the motors were initially messed up
