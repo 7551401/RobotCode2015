@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#define pi 3.1415926
 
 
 class Robot: public IterativeRobot
@@ -94,7 +95,7 @@ private:
 			total=0;
 				}
 		if ((dis)<=0.5)	{
-			myRobot->ArcadeDrive(1.0,0.0,true);
+			myRobot->ArcadeDrive(1.0,0.0,true); //robot would just run into object here.
 		}
 	}
 
@@ -116,9 +117,17 @@ private:
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
 		}
+		else
+		{
+		Sol->Set(DoubleSolenoid::kOff);
+		}
 		if (stick->GetRawButton(6)) {
 					Sol->Set(DoubleSolenoid::kReverse);
 				}
+		else
+		{
+		Sol->Set(DoubleSolenoid::kOff);
+		}
 		//camera->GetImage(frame);
 		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		//CameraServer::GetInstance()->SetImage(frame);
