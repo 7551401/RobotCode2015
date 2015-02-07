@@ -37,3 +37,7 @@ void DriveTrain::DriveOriented() {
 void DriveTrain::DriveAuto() {
 	myRobot->ArcadeDrive(1.0,0.0,true);
 }
+
+void DriveTrain::DriveSet(float speed, float angle){
+	myRobot->ArcadeDrive(speed,angle,true);
+}

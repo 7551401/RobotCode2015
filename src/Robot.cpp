@@ -21,6 +21,9 @@ private:
 	JoystickButton *abutton;
 	JoystickButton *ybutton;
 	Gyro *sandwich;
+	AnalogInput *input;
+	AnalogInput *input2;
+	double y=0.0;
 
 	void RobotInit()
 	{
@@ -49,7 +52,7 @@ private:
 		abutton= new JoystickButton(xbox,1); //input tbd
 		ybutton= new JoystickButton(xbox,4); //input tbd
 
-
+		input= new AnalogInput(0);
 		input2= new AnalogInput(1);
 		sandwich= new Gyro(input2);
 		sandwich->InitGyro();
@@ -77,31 +80,31 @@ private:
 			vic6->SetSpeed(1.0);} //speed not known not known
 		//drives right to tote
 		else if (zeTime<=2.0 && y>=.2){ //time and distance not known
-			myRobot->ArcadeDrive(1.0,0.0,true); //speed not known
+			Drive->DriveAuto(); //speed not known
 		}
 		//picks up right tote and left bin
 		else if (zeTime<=3.0){//time not known
 			vic5->SetSpeed(-0.8);//speed not known
 			vic6->SetSpeed(-0.8);}// speed not known
 		else if (zeTime<=6.0){//time not known
-			myRobot->ArcadeDrive(1.0, 0.3,true);//speed and direction not known
+			Drive->DriveSet(1.0, 0.3);//speed and direction not known
 		}
 		else if (zeTime<=7.0){//time not known
 			vic5->SetSpeed(0.9);//speed not known
 			vic6->SetSpeed(0.9); //speed not known
 		}
 		else if (zeTime<=7.5){//time not known
-			myRobot->ArcadeDrive(1.0,0.0,true);
+			Drive->DriveAuto();
 		}
 		else if (zeTime<=8.5){//time not known
 			vic5->SetSpeed(-1.0);//speed not known
 			vic6->SetSpeed(-1.0);//speed not known
 		}
 		else if (zeTime<=8.75){
-			myRobot->ArcadeDrive(-1.0, 0.0,true);
+			//Drive->myRobot(-1.0, 0.0,true);
 		}
 		else{
-			myRobot->ArcadeDrive(0.0,0.0,true);
+			//Drive->myRobot(0.0,0.0,true);
 		}
 	}
 
@@ -131,7 +134,7 @@ private:
 		SmartDashboard::PutNumber("voltage", voltage);
 		y=y+(.01*(dis-y));
 		SmartDashboard::PutNumber("Feet Away: ", y);
-		total=0;
+
 		if (xbox->GetRawButton(1)){
 			vic5->SetSpeed(1.0);
 			vic6->SetSpeed(1.0);

@@ -22,6 +22,7 @@ public:
 	void DriveOriented();
 	void DriveAuto();
 	double getThrottle(double);
+	void DriveSet(float, float);
 };
 
 #endif
