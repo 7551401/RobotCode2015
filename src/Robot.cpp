@@ -1,21 +1,17 @@
 #include "WPILib.h"
-
+#include "DriveTrain.h"
 
 class Robot: public IterativeRobot
 {
 private:
 	Encoder *encoder;
 	LiveWindow *lw; //references LiveWindow class
-	RobotDrive *myRobot; //references RobotDrive class
 	Timer *time;
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
 	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	DriveTrain * Drive;
 	Joystick *xbox;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
-	Victor *vic1;
-	Victor *vic2;
-	Victor *vic3;
-	Victor *vic4;
 	Victor *vic5;
 	Victor *vic6;
 	Compressor *comp;
@@ -25,46 +21,19 @@ private:
 	JoystickButton *abutton;
 	JoystickButton *ybutton;
 	Gyro *sandwich;
-	int i=0;
-	double y=0;
-	double total=0.0;
-	//AxisCamera *camera;
-	//Image *frame;
-	AnalogInput *input;
-	AnalogInput *input2;
-	double getThrottle(double val){
-	 float throttle = stick->GetThrottle();
-	 throttle++;
-	 throttle = throttle *((1-val)/2);
-	 throttle+= val;
-	 return throttle;
 
-	}
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		vic1 = new Victor(3);
-		vic2= new Victor(2);
-		vic3= new Victor(1);
-		vic4= new Victor(0);
-		vic5= new Victor(5); //input tbd
-		vic6= new Victor(6); //input tbd
-		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 
 		//std::string str= "192.168.0.90";
-		//camera= new AxisCamera(str);
-		//frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
+		Drive = new DriveTrain();
 
 
 
 		xbox= new Joystick(1); //input tbd
 
 
-		//Motors are inverted because the motors were initially messed up
-		myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
 		comp= new Compressor(); //Creates a new Compressor to Compress air
@@ -81,7 +50,6 @@ private:
 		ybutton= new JoystickButton(xbox,4); //input tbd
 
 
-		input= new AnalogInput(0);
 		input2= new AnalogInput(1);
 		sandwich= new Gyro(input2);
 		sandwich->InitGyro();
@@ -145,13 +113,8 @@ private:
 	void TeleopPeriodic()
 	{
 
-
-		float throttle = getThrottle(.5);
-		myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true); //Scales the Joystick values by the throttle value
 		SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
 		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
-		//SmartDashboard::PutNumber("Color Value: ", camera->GetColorLevel());
-		//SmartDashboard::PutNumber("Brightness: ", camera->GetBrightness());
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
 		}
