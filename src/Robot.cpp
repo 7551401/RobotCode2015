@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include "DriveTrain.h"
 
 class Robot: public IterativeRobot
 {
@@ -7,6 +8,7 @@ private:
 	LiveWindow *lw; //references LiveWindow class
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
 	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	DriveTrain * Drive;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	Compressor *comp;
 	JoystickButton *button1;
@@ -18,6 +20,7 @@ private:
 	{
 		lw = LiveWindow::GetInstance();
 		std::string str= "192.168.0.90";
+		Drive = new DriveTrain();
 
 
 
