@@ -20,6 +20,7 @@ private:
 	Timer *timer;
 	AxisCamera *camera;
 	Image *frame;
+	Servo *servo;
 	double getThrottle(double val){
 	 float throttle = stick->GetThrottle();
 	 throttle++;
@@ -57,6 +58,7 @@ private:
 
 		Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
 		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
+		servo = new Servo (0);
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
@@ -99,6 +101,12 @@ private:
 		if (stick->GetRawButton(6)) {
 					Sol->Set(DoubleSolenoid::kReverse);
 				}
+		if (stick-> GetRawButton(3)) {
+			servo-> SetAngle(180);
+		}
+		if (stick-> GetRawButton(4)) {
+					servo-> SetAngle(0);
+				}
 		camera->GetImage(frame);
 		imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		CameraServer::GetInstance()->SetImage(frame);
@@ -110,6 +118,8 @@ private:
 	{
 		lw->Run(); //Runs LiveWindow
 	}
+
+
 };
 
 START_ROBOT_CLASS(Robot);
