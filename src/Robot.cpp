@@ -7,24 +7,31 @@ private:
 	Encoder *encoder;
 	LiveWindow *lw; //references LiveWindow class
 	RobotDrive *myRobot; //references RobotDrive class
+	Timer *time;
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
 	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	Joystick *xbox;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	Victor *vic1;
 	Victor *vic2;
 	Victor *vic3;
 	Victor *vic4;
+	Victor *vic5;
+	Victor *vic6;
 	Compressor *comp;
 	JoystickButton *button1;
 	JoystickButton *button2;
 	JoystickButton *button3;
-	Timer *timer;
+	JoystickButton *abutton;
+	JoystickButton *ybutton;
+	Gyro *sandwich;
 	int i=0;
 	double y=0;
 	double total=0.0;
 	//AxisCamera *camera;
 	//Image *frame;
 	AnalogInput *input;
+	AnalogInput *input2;
 	double getThrottle(double val){
 	 float throttle = stick->GetThrottle();
 	 throttle++;
@@ -40,13 +47,17 @@ private:
 		vic2= new Victor(2);
 		vic3= new Victor(1);
 		vic4= new Victor(0);
+		vic5= new Victor(5); //input tbd
+		vic6= new Victor(6); //input tbd
 		myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
-		std::string str= "192.168.0.90";
+
+		//std::string str= "192.168.0.90";
 		//camera= new AxisCamera(str);
 		//frame= imaqCreateImage(IMAQ_IMAGE_RGB,0);
 
 
 
+		xbox= new Joystick(1); //input tbd
 
 
 		//Motors are inverted because the motors were initially messed up
@@ -66,39 +77,69 @@ private:
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
+		abutton= new JoystickButton(xbox,1); //input tbd
+		ybutton= new JoystickButton(xbox,4); //input tbd
 
 
 		input= new AnalogInput(0);
-
+		input2= new AnalogInput(1);
+		sandwich= new Gyro(input2);
+		sandwich->InitGyro();
+		sandwich->Reset();
 	}
 
 	void AutonomousInit()
 	{
-		timer->Start();
+		time= new Timer();
+		time->Start();
+		y=0;
 	}
 
 	void AutonomousPeriodic()
 	{
+		double zeTime= time->Get();
 		double voltage= input->GetVoltage();
 		double dis= voltage*1000;
 		dis/=9.766;
 		dis/=12;
-		SmartDashboard::PutNumber("voltage", voltage);
-		i+=1;
-		total= total+ dis;
-		if (i%10==0){
-			total/=10;
-			SmartDashboard::PutNumber("Feet Away", dis);
-			total=0;
-				}
-		if ((dis)<=0.5)	{
+		y=y+(.01*(dis-y));
+		//picks up right bin
+		if(zeTime<=1.0){ //time not known
+			vic5->SetSpeed(1.0); //speed not known
+			vic6->SetSpeed(1.0);} //speed not known not known
+		//drives right to tote
+		else if (zeTime<=2.0 && y>=.2){ //time and distance not known
+			myRobot->ArcadeDrive(1.0,0.0,true); //speed not known
+		}
+		//picks up right tote and left bin
+		else if (zeTime<=3.0){//time not known
+			vic5->SetSpeed(-0.8);//speed not known
+			vic6->SetSpeed(-0.8);}// speed not known
+		else if (zeTime<=6.0){//time not known
+			myRobot->ArcadeDrive(1.0, 0.3,true);//speed and direction not known
+		}
+		else if (zeTime<=7.0){//time not known
+			vic5->SetSpeed(0.9);//speed not known
+			vic6->SetSpeed(0.9); //speed not known
+		}
+		else if (zeTime<=7.5){//time not known
 			myRobot->ArcadeDrive(1.0,0.0,true);
+		}
+		else if (zeTime<=8.5){//time not known
+			vic5->SetSpeed(-1.0);//speed not known
+			vic6->SetSpeed(-1.0);//speed not known
+		}
+		else if (zeTime<=8.75){
+			myRobot->ArcadeDrive(-1.0, 0.0,true);
+		}
+		else{
+			myRobot->ArcadeDrive(0.0,0.0,true);
 		}
 	}
 
 	void TeleopInit()
 	{
-
+		y=0;
 	}
 
 	void TeleopPeriodic()
@@ -127,7 +168,20 @@ private:
 		SmartDashboard::PutNumber("voltage", voltage);
 		y=y+(.01*(dis-y));
 		SmartDashboard::PutNumber("Feet Away: ", y);
-			total=0;
+		total=0;
+		if (xbox->GetRawButton(1)){
+			vic5->SetSpeed(1.0);
+			vic6->SetSpeed(1.0);
+		}
+		else if (xbox->GetRawButton(4)){
+			vic5->SetSpeed(-1.0);
+			vic6->SetSpeed(-1.0);
+	}
+		else{
+			vic5->SetSpeed(0.0);
+			vic6->SetSpeed(0.0);
+		}
+
 
 	}
 
