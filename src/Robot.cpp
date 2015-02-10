@@ -1,5 +1,7 @@
 #include "WPILib.h"
 #include "DriveTrain.h"
+#include "SmartDashboard/SendableChooser.h"
+
 
 class Robot: public IterativeRobot
 {
@@ -15,16 +17,15 @@ private:
 	JoystickButton *button2;
 	JoystickButton *button3;
 	Timer *timer;
+	SendableChooser *chooser;
+	int Auto1;
+	int Auto2;
 
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
 		std::string str= "192.168.0.90";
 		Drive = new DriveTrain();
-
-
-
-
 
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
@@ -38,6 +39,13 @@ private:
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
+		Auto1 = 1;
+		Auto2 = 2;
+		//Multiple autonomous programs
+		chooser = new SendableChooser();
+		chooser->AddDefault("Autonomous 1", &Auto1);
+		chooser->AddObject("Autonomous 2", &Auto2);
+		SmartDashboard::PutData("Autonomous modes", chooser);
 
 
 
@@ -45,12 +53,12 @@ private:
 
 	void AutonomousInit()
 	{
-		timer->Start();
+		int AutoCode = *(int*)(chooser->GetSelected());
 	}
 
 	void AutonomousPeriodic()
 	{
-		}
+
 	}
 
 	void TeleopInit()

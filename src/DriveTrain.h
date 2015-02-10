@@ -15,6 +15,7 @@ class DriveTrain {
 	Victor *vic4;
 	Joystick *stick;
 	RobotDrive *myRobot;
+	bool IsForward;
 
 
 public:
@@ -22,6 +23,8 @@ public:
 	void DriveOriented();
 	void DriveAuto();
 	double getThrottle(double);
+	void ReverseControls();
+	void ForwardControls();
 };
 
 #endif
