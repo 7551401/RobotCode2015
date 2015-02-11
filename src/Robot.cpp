@@ -1,5 +1,7 @@
 #include "WPILib.h"
 #include "DriveTrain.h"
+#include "SmartDashboard/SendableChooser.h"
+
 
 class Robot: public IterativeRobot
 {
@@ -18,11 +20,23 @@ private:
 	Victor *vic5;
 	Victor *vic6;
 	Compressor *comp;
+	JoystickButton *button1;
+	JoystickButton *button2;
+	JoystickButton *button3;
 
+	Timer *timer;
+	SendableChooser *chooser;
+	int Auto1;
+	int Auto2;
+
+	JoystickButton *abutton;
+	JoystickButton *ybutton;
 	Gyro *sandwich;
 	AnalogInput *input;
 	AnalogInput *input2;
+	Servo *servo;
 	double y=0.0;
+
 
 	void RobotInit()
 	{
@@ -33,7 +47,9 @@ private:
 
 
 
+
 		xbox= new Joystick(1); //input tbd
+
 
 
 		//stick= new Joystick(0);
@@ -50,7 +66,24 @@ private:
 		Cam3->Set(DoubleSolenoid::Value::kForward);
 		shift->Set(DoubleSolenoid::Value::kForward);
 		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
+		servo = new Servo (0);
 
+		button1= new JoystickButton(stick,1);
+		button2= new JoystickButton(stick,2);
+		button3= new JoystickButton(stick,3);
+		Auto1 = 1;
+		Auto2 = 2;
+		//Multiple autonomous programs
+		chooser = new SendableChooser();
+		chooser->AddDefault("Autonomous 1", &Auto1);
+		chooser->AddObject("Autonomous 2", &Auto2);
+		SmartDashboard::PutData("Autonomous modes", chooser);
+
+
+
+
+		abutton= new JoystickButton(xbox,1); //input tbd
+		ybutton= new JoystickButton(xbox,4); //input tbd
 
 
 		input= new AnalogInput(0);
@@ -83,13 +116,18 @@ private:
 
 	void AutonomousInit()
 	{
+
+		int AutoCode = *(int*)(chooser->GetSelected());
+
 		time= new Timer();
 		time->Start();
 		y=0;
+
 	}
 
 	void AutonomousPeriodic()
 	{
+
 		double zeTime= time->Get();
 		//double voltage= input->GetVoltage();
 		// dis= voltage*1000;
@@ -143,6 +181,7 @@ private:
 		else{
 			Drive->DriveSet(0.0,0.0);
 		}
+
 	}
 
 	void TeleopInit()
@@ -177,6 +216,9 @@ private:
 		//camera->GetImage(frame);
 		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		//CameraServer::GetInstance()->SetImage(frame);
+		//camera->GetImage(frame);
+		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
+		//CameraServer::GetInstance()->SetImage(frame);
 		double voltage= input->GetVoltage();
 		double dis= voltage*1000;
 		dis/=9.766;
@@ -205,6 +247,8 @@ private:
 	{
 		lw->Run(); //Runs LiveWindow
 	}
+
+
 };
 
 START_ROBOT_CLASS(Robot);
