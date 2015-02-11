@@ -20,12 +20,12 @@ private:
 	JoystickButton *button1;
 	JoystickButton *button2;
 	JoystickButton *button3;
-<<<<<<< HEAD
+
 	Timer *timer;
 	SendableChooser *chooser;
 	int Auto1;
 	int Auto2;
-=======
+
 	JoystickButton *abutton;
 	JoystickButton *ybutton;
 	Gyro *sandwich;
@@ -33,7 +33,7 @@ private:
 	AnalogInput *input2;
 	Servo *servo;
 	double y=0.0;
->>>>>>> origin/master
+
 
 	void RobotInit()
 	{
@@ -42,14 +42,13 @@ private:
 		//std::string str= "192.168.0.90";
 		Drive = new DriveTrain();
 
-<<<<<<< HEAD
-=======
+
 
 
 		xbox= new Joystick(1); //input tbd
 
 
->>>>>>> origin/master
+
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
 		comp= new Compressor(); //Creates a new Compressor to Compress air
@@ -63,7 +62,6 @@ private:
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
-<<<<<<< HEAD
 		Auto1 = 1;
 		Auto2 = 2;
 		//Multiple autonomous programs
@@ -74,7 +72,7 @@ private:
 
 
 
-=======
+
 		abutton= new JoystickButton(xbox,1); //input tbd
 		ybutton= new JoystickButton(xbox,4); //input tbd
 
@@ -83,25 +81,23 @@ private:
 		sandwich= new Gyro(input2);
 		sandwich->InitGyro();
 		sandwich->Reset();
->>>>>>> origin/master
+
 	}
 
 	void AutonomousInit()
 	{
-<<<<<<< HEAD
+
 		int AutoCode = *(int*)(chooser->GetSelected());
-=======
+
 		time= new Timer();
 		time->Start();
 		y=0;
->>>>>>> origin/master
+
 	}
 
 	void AutonomousPeriodic()
 	{
-<<<<<<< HEAD
 
-=======
 		double zeTime= time->Get();
 		double voltage= input->GetVoltage();
 		double dis= voltage*1000;
@@ -140,7 +136,7 @@ private:
 		else{
 			//Drive->myRobot(0.0,0.0,true);
 		}
->>>>>>> origin/master
+
 	}
 
 	void TeleopInit()
