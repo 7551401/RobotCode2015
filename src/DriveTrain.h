@@ -1,10 +1,3 @@
-/*
- * DriveTrain.h
- *
- *  Created on: Jan 31, 2015
- *      Author: Peter
- */
-
 #ifndef _DRIVETRAIN_H_
 #define _DRIVETRAIN_H_
 
@@ -15,6 +8,7 @@ class DriveTrain {
 	Victor *vic4;
 	Joystick *stick;
 	RobotDrive *myRobot;
+	bool IsForward;
 
 
 public:
@@ -23,6 +17,8 @@ public:
 	void DriveAuto();
 	double getThrottle(double);
 	void DriveSet(float, float);
+	void ReverseControls();
+	void ForwardControls();
 };
 
 #endif
