@@ -6,6 +6,7 @@ DriveTrain::DriveTrain() {
 	vic2= new Victor(2);
 	vic3= new Victor(1);
 	vic4= new Victor(0);
+	//front left, back left, front right, back right
 	myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 	stick = new Joystick(0);
 	IsForward = new bool;
@@ -58,7 +59,16 @@ void DriveTrain::ForwardControls() {
 void DriveTrain::DriveOriented() {
 	//Scales the Joystick values by the throttle value
 	float throttle = getThrottle(.5);
+
 	myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true);
+	if (stick->GetX()<-.33){
+		vic1->SetSpeed(0.0);
+		vic2->SetSpeed(0.0);
+	}
+	else if (stick->GetX()>.33){
+		vic3->SetSpeed(0.0);
+		vic4->SetSpeed(0.0);
+	}
 
 	if (stick->GetRawButton(9)) {
 		ReverseControls();
