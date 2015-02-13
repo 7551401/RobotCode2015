@@ -192,7 +192,7 @@ private:
 	void TeleopPeriodic()
 	{
 
-		/*SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
+
 		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
@@ -225,7 +225,7 @@ private:
 		dis/=12;
 		SmartDashboard::PutNumber("voltage", voltage);
 		y=y+(.01*(dis-y));
-		SmartDashboard::PutNumber("Feet Away: ", y); */
+		SmartDashboard::PutNumber("Feet Away: ", y);
 		if (xbox->GetRawAxis(5) >= 0.2){
 			vic5->SetSpeed(1.0);
 			vic6->SetSpeed(1.0);
