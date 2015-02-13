@@ -65,10 +65,10 @@ private:
 		Cam2->Set(DoubleSolenoid::Value::kForward);
 		Cam3->Set(DoubleSolenoid::Value::kForward);
 		shift->Set(DoubleSolenoid::Value::kForward);
-		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
+		encoder = new Encoder (18, 19, true, CounterBase:: k4X);*/
 		servo = new Servo (0);
 
-		button1= new JoystickButton(stick,1);
+		/*button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
 		Auto1 = 1;
@@ -211,9 +211,16 @@ private:
 		}
 		if (stick->GetRawButton(1)){
 			shift->Set(DoubleSolenoid::kForward);
+		}*/
+		if (stick->GetRawButton(9))
+		{
+			servo->SetAngle(180);
 		}
-
-		//camera->GetImage(frame);
+		if (stick->GetRawButton(10))
+		{
+			servo->SetAngle(0);
+		}
+		/*camera->GetImage(frame);
 		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		//CameraServer::GetInstance()->SetImage(frame);
 		//camera->GetImage(frame);
