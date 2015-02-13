@@ -70,11 +70,11 @@ void DriveTrain::DriveOriented() {
 		vic4->SetSpeed(0.0);
 	}
 
-	if (stick->GetRawButton(9)) {
+	if (stick->GetRawButton(1)) {
 		ReverseControls();
 	}
 
-	if (stick->GetRawButton(8)) {
+	if (stick->GetRawButton(2)) {
 		ForwardControls();
 	}
 };

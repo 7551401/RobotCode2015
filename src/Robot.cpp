@@ -62,11 +62,11 @@ private:
 		Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
 		Cam2->Set(DoubleSolenoid::Value::kForward);
 		Cam3->Set(DoubleSolenoid::Value::kForward);
-		shift->Set(DoubleSolenoid::Value::kForward);
-		encoder = new Encoder (18, 19, true, CounterBase:: k4X);*/
+		shift->Set(DoubleSolenoid::Value::kForward);*/
+		encoder = new Encoder (16, 17, true, CounterBase:: k4X);//port numbers as parameters
 		servo = new Servo (0);
-
-		/*button1= new JoystickButton(stick,1);
+/*
+		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
 		Auto1 = 1;
@@ -137,7 +137,7 @@ private:
 			vic6->SetSpeed(1.0);//speed not known not known
 			;}
 		//drives right to tote
-		else if (zeTime<=2.0 && y>=.2){ //time and distance not known
+		else if (zeTime<=2.0){ //time and distance not known
 			Drive->DriveAuto(); //speed not known
 		}
 		//picks up right tote and left bin
@@ -187,7 +187,7 @@ private:
 	void TeleopPeriodic()
 	{
 
-
+		/*SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
 		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
@@ -206,16 +206,9 @@ private:
 		}
 		if (stick->GetRawButton(1)){
 			shift->Set(DoubleSolenoid::kForward);
-		}*/
-		if (stick->GetRawButton(9))
-		{
-			servo->SetAngle(180);
 		}
-		if (stick->GetRawButton(10))
-		{
-			servo->SetAngle(0);
-		}
-		/*camera->GetImage(frame);
+
+		//camera->GetImage(frame);
 		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		//CameraServer::GetInstance()->SetImage(frame);
 		//camera->GetImage(frame);
@@ -228,11 +221,11 @@ private:
 		SmartDashboard::PutNumber("voltage", voltage);
 		y=y+(.01*(dis-y));
 		SmartDashboard::PutNumber("Feet Away: ", y);
-		if (xbox->GetRawAxis(5) >= 0.2){
+		if (xbox->GetRawButton(1) >= 0.2){
 			vic5->SetSpeed(1.0);
 			vic6->SetSpeed(1.0);
 		}
-		else if (xbox->GetRawAxis(5) <= 0.2){
+		else if (xbox->GetRawButton(4) <= 0.2){
 			vic5->SetSpeed(-1.0);
 			vic6->SetSpeed(-1.0);
 	}
@@ -240,7 +233,7 @@ private:
 			vic5->SetSpeed(0.0);
 			vic6->SetSpeed(0.0);
 		}
-
+*/		SmartDashboard::PutNumber("Distance per second: ", encoder->GetRate());
 		Drive->DriveOriented();
 
 	}
