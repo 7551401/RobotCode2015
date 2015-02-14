@@ -10,7 +10,7 @@ private:
 	LiveWindow *lw; //references LiveWindow class
 	Timer *time;
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
-	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	Joystick *xbox; //references Joystick class; RotStick used for twisting the stick
 	DriveTrain * Drive;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	DoubleSolenoid *Cam2;
@@ -47,11 +47,12 @@ private:
 
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
-		/*comp= new Compressor(); //Creates a new Compressor to Compress air
+		xbox = new Joystick(1);
+		comp= new Compressor(); //Creates a new Compressor to Compress air
 		comp->Start(); //Starts Compressor
 		Sol= new DoubleSolenoid(0,0,1); //Creates a new DoubleSolenoid with parameters of 0 for the port
 		Cam2= new DoubleSolenoid(1,0,1);
-		Cam3= new DoubleSolenoid(2,0,1);*/
+		Cam3= new DoubleSolenoid(2,0,1);
 
 		shift = new DoubleSolenoid(6,7);
 
@@ -93,7 +94,7 @@ private:
 
 	void LetGo(){
 		Cam2->Set(DoubleSolenoid::kReverse);
-							Cam3->Set(DoubleSolenoid::kReverse);
+		Cam3->Set(DoubleSolenoid::kReverse);
 	}
 
 	void Push(){
@@ -130,7 +131,7 @@ private:
 			Drive->DriveSet(0.0,0.0);
 			jag1->SetSpeed(1.0); //speed not known
 			jag2->SetSpeed(1.0);//speed not known not known
-			;}
+
 		//drives right to tote
 			Drive->DriveAuto(); //speed not known
 		}

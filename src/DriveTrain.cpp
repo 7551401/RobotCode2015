@@ -77,10 +77,10 @@ void DriveTrain::DriveOriented() {
 	if (stick->GetRawButton(9)) {
 		ReverseControls();
 	}
-
+	else if (stick->GetRawButton(8)) {
 		ForwardControls();
 	}
-};
+}
 
 //Driving in Autonomous
 void DriveTrain::DriveAuto() {
