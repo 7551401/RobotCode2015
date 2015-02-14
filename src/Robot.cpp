@@ -52,7 +52,7 @@ private:
 
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
-		/*comp= new Compressor(); //Creates a new Compressor to Compress air
+		comp= new Compressor(); //Creates a new Compressor to Compress air
 		comp->Start(); //Starts Compressor
 		Sol= new DoubleSolenoid(0,0,1); //Creates a new DoubleSolenoid with parameters of 0 for the port
 		Cam2= new DoubleSolenoid(1,0,1);
