@@ -6,9 +6,14 @@ DriveTrain::DriveTrain() {
 	vic2= new Victor(2);
 	vic3= new Victor(1);
 	vic4= new Victor(0);
+	vic5= new Victor(4);
+	vic6= new Victor(5);
+
 	//front left, back left, front right, back right
 	myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
+	JoesFace= new RobotDrive(vic5, vic6);
 	stick = new Joystick(0);
+	xbox = new Joystick(1);
 	IsForward = new bool;
 
 	//Motors are inverted because the motors were initially messed up
@@ -16,6 +21,8 @@ DriveTrain::DriveTrain() {
 	myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 	myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 	myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+	JoesFace->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
+	JoesFace->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 	//Sets boolean for joystick controls
 	IsForward = true;
 
@@ -78,6 +85,22 @@ void DriveTrain::DriveOriented() {
 		ForwardControls();
 	}
 };
+
+void DriveTrain::LiftElevator() {
+
+	if (xbox->GetRawButton(5)) {
+		vic5->SetSpeed(1.0);
+		vic6->SetSpeed(1.0);
+	}
+	else if (xbox->GetRawButton(6)) {
+		vic5->SetSpeed(-1.0);
+		vic6->SetSpeed(-1.0);
+	}
+	else {
+		vic5->SetSpeed(0.0);
+		vic6->SetSpeed(0.0);
+	}
+}
 
 //Driving in Autonomous
 void DriveTrain::DriveAuto() {

@@ -12,7 +12,7 @@ private:
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
 	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
 	DriveTrain * Drive;
-	Joystick *xbox;
+	//Joystick *xbox;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	DoubleSolenoid *Cam2;
 	DoubleSolenoid *Cam3;
@@ -23,6 +23,8 @@ private:
 	JoystickButton *button1;
 	JoystickButton *button2;
 	JoystickButton *button3;
+	//JoystickButton *LB;
+	//JoystickButton *RB;
 
 	Timer *timer;
 	SendableChooser *chooser;
@@ -43,10 +45,9 @@ private:
 		//std::string str= "192.168.0.90";
 		Drive = new DriveTrain();
 
-
-
-
-		xbox= new Joystick(1); //input tbd
+		//LB= new JoystickButton(xbox, 5);
+		//RB= new JoystickButton(xbox, 6);
+		//xbox= new Joystick(1); //input tbd
 
 
 
@@ -63,7 +64,7 @@ private:
 		Cam2->Set(DoubleSolenoid::Value::kForward);
 		Cam3->Set(DoubleSolenoid::Value::kForward);
 		shift->Set(DoubleSolenoid::Value::kForward);*/
-		encoder = new Encoder (16, 17, true, CounterBase:: k4X);//port numbers as parameters
+		encoder = new Encoder (16, 17, true, CounterBase::k4X);//port numbers as parameters
 		servo = new Servo (0);
 /*
 		button1= new JoystickButton(stick,1);
@@ -206,8 +207,17 @@ private:
 		}
 		if (stick->GetRawButton(1)){
 			shift->Set(DoubleSolenoid::kForward);
+		}*/
+		/*if (xbox->GetRawButton(5))
+		{
+
 		}
 
+		if (xbox->GetRawButton(6))
+		{
+
+		}
+		*/
 		//camera->GetImage(frame);
 		//imaqDrawShapeOnImage(frame,frame, {10,10,100,100}, DrawMode::IMAQ_DRAW_VALUE, ShapeMode::IMAQ_SHAPE_OVAL,0.0f);
 		//CameraServer::GetInstance()->SetImage(frame);
@@ -221,8 +231,8 @@ private:
 		SmartDashboard::PutNumber("voltage", voltage);
 		y=y+(.01*(dis-y));
 		SmartDashboard::PutNumber("Feet Away: ", y);
-		if (xbox->GetRawButton(1) >= 0.2){
-			vic5->SetSpeed(1.0);
+		if (+->GetRawButton(1) >= 0.2){
+			v.055555ic5->SetSpeed(1.0);
 			vic6->SetSpeed(1.0);
 		}
 		else if (xbox->GetRawButton(4) <= 0.2){
