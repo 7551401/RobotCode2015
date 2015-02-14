@@ -12,7 +12,6 @@ private:
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
 	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
 	DriveTrain * Drive;
-	Joystick *xbox;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	DoubleSolenoid *Cam2;
 	DoubleSolenoid *Cam3;
@@ -29,8 +28,6 @@ private:
 	int Auto1;
 	int Auto2;
 
-	JoystickButton *abutton;
-	JoystickButton *ybutton;
 	Gyro *sandwich;
 	AnalogInput *input;
 	AnalogInput *input2;
@@ -48,10 +45,6 @@ private:
 
 
 
-		xbox= new Joystick(1); //input tbd
-
-
-
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
 		/*comp= new Compressor(); //Creates a new Compressor to Compress air
@@ -66,9 +59,7 @@ private:
 		Cam2->Set(DoubleSolenoid::Value::kForward);
 		Cam3->Set(DoubleSolenoid::Value::kForward);
 		shift->Set(DoubleSolenoid::Value::kForward);
-		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
 		servo = new Servo (0);
-
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
@@ -83,8 +74,6 @@ private:
 
 
 
-		abutton= new JoystickButton(xbox,1); //input tbd
-		ybutton= new JoystickButton(xbox,4); //input tbd
 
 
 		input= new AnalogInput(0);
@@ -143,7 +132,6 @@ private:
 			jag2->SetSpeed(1.0);//speed not known not known
 			;}
 		//drives right to tote
-		else if (zeTime<=2.0 && y>=.2){ //time and distance not known
 			Drive->DriveAuto(); //speed not known
 		}
 		//picks up right tote and left bin
@@ -241,7 +229,6 @@ private:
 			jag1->SetSpeed(0.0);
 			jag2->SetSpeed(0.0);
 		}
-
 
 		//Double Solenoid Code
 		if (stick->GetRawButton(3)) {
