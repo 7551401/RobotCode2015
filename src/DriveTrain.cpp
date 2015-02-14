@@ -17,6 +17,7 @@ DriveTrain::DriveTrain() {
 	myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	//Sets boolean for joystick controls
 	IsForward = true;
+
 };
 
 double DriveTrain::getThrottle(double val){
@@ -58,6 +59,17 @@ void DriveTrain::DriveOriented() {
 	//Scales the Joystick values by the throttle value
 	float throttle = getThrottle(.5);
 	myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true);
+
+	if (stick->GetX()<-.33) {
+		vic1->SetSpeed(0.0);
+		vic2->SetSpeed(0.0);
+	}
+
+	else if (stick->GetX()>.33) {
+		vic3->SetSpeed(0.0);
+		vic4->SetSpeed(0.0);
+	}
+
 
 	if (stick->GetRawButton(9)) {
 		ReverseControls();

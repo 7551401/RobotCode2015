@@ -1,10 +1,3 @@
-/*
- * DriveTrain.h
- *
- *  Created on: Jan 31, 2015
- *      Author: Peter
- */
-
 #ifndef _DRIVETRAIN_H_
 #define _DRIVETRAIN_H_
 
