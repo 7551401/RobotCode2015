@@ -8,6 +8,8 @@ class DriveTrain {
 	Victor *vic4;
 	Joystick *stick;
 	RobotDrive *myRobot;
+	RobotDrive *forwardRobot;
+	RobotDrive *backwardRobot;
 	bool IsForward;
 
 

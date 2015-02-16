@@ -6,16 +6,20 @@ DriveTrain::DriveTrain() {
 	vic2= new Victor(2);
 	vic3= new Victor(1);
 	vic4= new Victor(0);
-	//front left, back left, front right, back right
-	myRobot= new RobotDrive(vic1,vic2,vic3,vic4);
+	forwardRobot= new RobotDrive(vic1,vic2,vic3,vic4);
+	backwardRobot = new RobotDrive(vic3, vic4, vic1, vic2);
+	myRobot = backwardRobot;
 	stick = new Joystick(0);
-	IsForward = new bool;
 
 	//Motors are inverted because the motors were initially messed up
-	myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
-	myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
-	myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
-	myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+	forwardRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
+	forwardRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+	forwardRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
+	forwardRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+	backwardRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
+	backwardRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+	backwardRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
+	backwardRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	//Sets boolean for joystick controls
 	IsForward = true;
 
@@ -33,48 +37,67 @@ double DriveTrain::getThrottle(double val){
 //Reverses controls if normal
 void DriveTrain::ReverseControls() {
 	if (IsForward) {
-		myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
-		myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, false);
-		myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, false);
-		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, false);
 
+		myRobot = backwardRobot;
 		IsForward = false;
+
+		//myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
+		//myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, false);
+		//myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, false);
+		//myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, false);
+
 	}
 }
 
 //Sets controls to normal if reversed
 void DriveTrain::ForwardControls() {
 	if (!IsForward) {
-		myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
-		myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		//myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
+		//myRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
+		//myRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
+		//myRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+
+		myRobot = forwardRobot;
 		IsForward = true;
 	}
-
-
 }
 
 //Driving in Teleop
 void DriveTrain::DriveOriented() {
 	//Scales the Joystick values by the throttle value
-	float throttle = getThrottle(.5);
+	float throttle = getThrottle(.4);
+	myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle,
+			true);
 
-	myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle, true);
-	if (stick->GetX()<-.33){
-		vic1->SetSpeed(0.0);
-		vic2->SetSpeed(0.0);
-	}
-	else if (stick->GetX()>.33){
-		vic3->SetSpeed(0.0);
-		vic4->SetSpeed(0.0);
+	//forwardRobot->Feed();
+	//backwardRobot->Feed();
+	if (stick->GetX()<-.33) {
+		if (IsForward) {
+			vic1->SetSpeed(0.0);
+			vic2->SetSpeed(0.0);
+		} else {
+
+			vic3->SetSpeed(0.0);
+			vic4->SetSpeed(0.0);
+		}
 	}
 
-	if (stick->GetRawButton(1)) {
+	else if (stick->GetX()>.33) {
+		if (IsForward) {
+			vic3->SetSpeed(0.0);
+			vic4->SetSpeed(0.0);
+		} else {
+
+			vic1->SetSpeed(0.0);
+			vic2->SetSpeed(0.0);
+		}
+	}
+
+	if (stick->GetRawButton(9)) {
 		ReverseControls();
 	}
 
-	if (stick->GetRawButton(2)) {
+	if (stick->GetRawButton(8)) {
 		ForwardControls();
 	}
 };
