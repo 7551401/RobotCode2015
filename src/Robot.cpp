@@ -10,9 +10,8 @@ private:
 	LiveWindow *lw; //references LiveWindow class
 	Timer *time;
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
-	Joystick *RotStick; //references Joystick class; RotStick used for twisting the stick
+	Joystick *xbox; //references Joystick class; RotStick used for twisting the stick
 	DriveTrain * Drive;
-	Joystick *xbox;
 	DoubleSolenoid *Sol; //references DoubleSolenoid class
 	DoubleSolenoid *Cam2;
 	DoubleSolenoid *Cam3;
@@ -45,10 +44,6 @@ private:
 		//std::string str= "192.168.0.90";
 		Drive = new DriveTrain();
 
-
-
-
-		xbox= new Joystick(1); //input tbd
 
 
 
