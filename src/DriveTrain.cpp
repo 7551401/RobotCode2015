@@ -9,6 +9,8 @@ DriveTrain::DriveTrain() {
 	forwardRobot= new RobotDrive(vic1,vic2,vic3,vic4);
 	backwardRobot = new RobotDrive(vic3, vic4, vic1, vic2);
 	myRobot = backwardRobot;
+	backwardRobot->SetSafetyEnabled(false);
+	forwardRobot->SetSafetyEnabled(false);
 	stick = new Joystick(0);
 
 	//Motors are inverted because the motors were initially messed up
@@ -22,8 +24,22 @@ DriveTrain::DriveTrain() {
 	backwardRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	//Sets boolean for joystick controls
 	IsForward = true;
+	//leftEncoder = new Encoder (24,25, true, CounterBase:: k4X);
+	///rightEncoder = new Encoder (16,17, true, CounterBase:: k4X);
+	//leftEncoder->SetDistancePerPulse(123.4/891.15);
+	//rightEncoder->SetDistancePerPulse(123.4/1584.4);
+	//leftEncoder->Reset();
+	//rightEncoder->Reset();
 
 };
+void DriveTrain::AutonomousInit(){
+	leftEncoder->Reset();
+	rightEncoder->Reset();
+}
+void DriveTrain::TeleopInit(){
+	//leftEncoder->Reset();
+	//rightEncoder->Reset();
+}
 
 double DriveTrain::getThrottle(double val){
 	 float throttle = stick->GetThrottle();
@@ -39,6 +55,8 @@ void DriveTrain::ReverseControls() {
 	if (IsForward) {
 
 		myRobot = backwardRobot;
+		backwardRobot->SetSafetyEnabled(true);
+		forwardRobot->SetSafetyEnabled(false);
 		IsForward = false;
 
 		//myRobot->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
@@ -59,6 +77,8 @@ void DriveTrain::ForwardControls() {
 
 		myRobot = forwardRobot;
 		IsForward = true;
+		backwardRobot->SetSafetyEnabled(false);
+		forwardRobot->SetSafetyEnabled(true);
 	}
 }
 
@@ -93,13 +113,18 @@ void DriveTrain::DriveOriented() {
 		}
 	}
 
-	if (stick->GetRawButton(9)) {
+	if (stick->GetRawButton(5)) {
 		ReverseControls();
 	}
 
-	if (stick->GetRawButton(8)) {
+	if (stick->GetRawButton(3)) {
 		ForwardControls();
 	}
+	/*SmartDashboard::PutNumber("Total Distance, left", leftEncoder->GetDistance());
+			SmartDashboard::PutNumber("Distance per Second, left", leftEncoder->GetRate());
+
+			SmartDashboard::PutNumber("Total Distance, right", rightEncoder->GetDistance());
+			SmartDashboard::PutNumber("Distance per Second, right", rightEncoder->GetRate());*/
 }
 
 //Driving in Autonomous
@@ -109,4 +134,10 @@ void DriveTrain::DriveAuto() {
 
 void DriveTrain::DriveSet(float speed, float angle){
 	myRobot->ArcadeDrive(speed,angle,true);
+	//SmartDashboard::PutNumber("LD", leftEncoder->GetDistance());
+	//SmartDashboard::PutNumber("RD", rightEncoder->GetDistance());
 }
+
+void DriveTrain::Right90(){
+	myRobot->ArcadeDrive(0.0,1.0,true);}
+

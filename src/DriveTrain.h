@@ -14,7 +14,8 @@ class DriveTrain {
 	RobotDrive *forwardRobot;
 	RobotDrive *backwardRobot;
 	bool IsForward;
-
+	Encoder *leftEncoder;
+	Encoder *rightEncoder;
 
 
 public:
@@ -26,6 +27,9 @@ public:
 	void DriveSet(float, float);
 	void ReverseControls();
 	void ForwardControls();
+	void AutonomousInit();
+	void TeleopInit();
+	void Right90();
 };
 
 #endif

@@ -6,7 +6,9 @@
 class Robot: public IterativeRobot
 {
 private:
-	Encoder *encoder;
+	Encoder *leftEncoder;
+	Encoder *rightEncoder;
+	Encoder *elevatorEncoder;
 	LiveWindow *lw; //references LiveWindow class
 	Timer *time;
 	Joystick *stick; //references Joystick class; stick used for forward and backward movement
@@ -36,10 +38,11 @@ private:
 	Servo *servo;
 	double y=0.0;
 
+	int AutoCode;
 
 	void RobotInit()
 	{
-		lw = LiveWindow::GetInstance();
+		//lw = LiveWindow::GetInstance();
 
 		//std::string str= "192.168.0.90";
 		Drive = new DriveTrain();
@@ -49,35 +52,43 @@ private:
 
 		//stick= new Joystick(0);
 		stick = new Joystick(0); //Creates a new Joystick for forward and backward movement
-		comp= new Compressor(); //Creates a new Compressor to Compress air
-		comp->Start(); //Starts Compressor
+		xbox = new Joystick(1);
+		//comp= new Compressor(); //Creates a new Compressor to Compress air
+		//comp->Start(); //Starts Compressor
 		/*Sol= new DoubleSolenoid(0,0,1); //Creates a new DoubleSolenoid with parameters of 0 for the port
 		Cam2= new DoubleSolenoid(1,0,1);
 		Cam3= new DoubleSolenoid(2,0,1);*/
 
-		shift = new DoubleSolenoid(6,7);
+		//shift = new DoubleSolenoid(6,7);
 
 		/*Sol->Set(DoubleSolenoid::Value::kForward); //Set DoubleSolenoid to go forward
 		Cam2->Set(DoubleSolenoid::Value::kForward);
 		Cam3->Set(DoubleSolenoid::Value::kForward);
 		shift->Set(DoubleSolenoid::Value::kForward);*/
-		encoder = new Encoder (18, 19, true, CounterBase:: k4X);
+		leftEncoder = new Encoder (24,25, true, CounterBase:: k4X);
+		rightEncoder = new Encoder (16,17, true, CounterBase:: k4X);
+		elevatorEncoder = new Encoder (20, 21, true, CounterBase:: k4X);
+		leftEncoder->SetDistancePerPulse(123.4/891.15);
+		rightEncoder->SetDistancePerPulse(123.4/1584.4);
+
 		/*servo = new Servo (0);
 
 		button1= new JoystickButton(stick,1);
 		button2= new JoystickButton(stick,2);
 		button3= new JoystickButton(stick,3);
 		Auto1 = 1;
-		Auto2 = 2;
+		Auto2 = 2;*/
 		//Multiple autonomous programs
 		chooser = new SendableChooser();
-		chooser->AddDefault("Autonomous 1", &Auto1);
-		chooser->AddObject("Autonomous 2", &Auto2);
+		chooser->AddDefault("Do nothing", (void*)1);
+		chooser->AddObject("Drive Forward" , (void*)2);
+		chooser->AddObject("One tote", (void*)3);
 		SmartDashboard::PutData("Autonomous modes", chooser);
 
+		leftEncoder->Reset();
+		rightEncoder->Reset();
 
-
-
+/*
 		abutton= new JoystickButton(xbox,1); //input tbd
 		ybutton= new JoystickButton(xbox,4); //input tbd
 
@@ -92,7 +103,7 @@ private:
 		jag2= new Jaguar(5);
 	}
 
-	void Grab(){
+	/*void Grab(){
 		Cam2->Set(DoubleSolenoid::kReverse);
 		Cam3->Set(DoubleSolenoid::kReverse);
 	}
@@ -108,12 +119,12 @@ private:
 
 	void donePush(){
 		Sol->Set(DoubleSolenoid::kForward);
-	}
+	}*/
 
 	void AutonomousInit()
 	{
 
-		//int AutoCode = *(int*)(chooser->GetSelected());
+		AutoCode = (int)(chooser->GetSelected());
 
 		time= new Timer();
 		time->Start();
@@ -123,8 +134,66 @@ private:
 
 	void AutonomousPeriodic()
 	{
+		switch(AutoCode) //Chooses which autonomous code to run
+		{
+			case 1: doNothing();
 
-	/*	double zeTime= time->Get();
+			break;
+
+			case 2: driveForward();
+
+			break;
+
+			case 3: oneTote();
+
+			break;
+
+
+		}
+	}
+
+	void doNothing(){
+		Drive->DriveSet(0.0,0.0);
+	}
+
+
+	void driveForward(){
+		if (leftEncoder->GetDistance()<105 &&
+				leftEncoder->GetDistance()>-105 &&
+				rightEncoder->GetDistance()>-105 &&
+				rightEncoder->GetDistance() <105){
+			Drive->DriveSet(-0.75,0.0);
+		}
+		else
+			Drive->DriveSet(0.0,0.0);
+		SmartDashboard::PutNumber("left", leftEncoder->GetDistance());
+		SmartDashboard::PutNumber("right" , rightEncoder->GetDistance());
+	}
+
+	void oneTote(){
+		if (time->Get()<2.0){
+			jag1->SetSpeed(-1.0);
+			jag2->SetSpeed(-1.0);}
+		else if (time->Get()<4.0){
+			driveForward();}
+		else if (time->Get()<7.0){
+			jag1->SetSpeed(1.0); //speed not known
+			jag2->SetSpeed(1.0);
+		}
+		else if (time->Get()<7.3){
+			Drive->DriveSet(-0.5,0.0);
+		}
+		else if (time->Get()<8.0){
+			Drive->Right90();
+		}
+		else{
+			Drive->DriveSet(0.0,0.0);
+		}
+	}
+	/*void AutonomousPeriodic1()
+	{
+
+		double zeTime= time->Get();
 		//double voltage= input->GetVoltage();
 		// dis= voltage*1000;
 		//dis/=9.766;
@@ -176,21 +245,39 @@ private:
 		}
 		else{
 			Drive->DriveSet(0.0,0.0);
-		}*/
+		}
+		if (zeTime<=3){
+			Drive->DriveSet(0.75,0.0);
+		}
+		else {
+			Drive->DriveSet(0.0,0.0);
+		}
+		SmartDashboard::PutNumber("LD", leftEncoder->GetDistance());
+		SmartDashboard::PutNumber("RD", rightEncoder->GetDistance());
 
-	}
+
+	}*/
+
+
 
 	void TeleopInit()
 	{
 		y=0;
+		rightEncoder->Reset();
+		leftEncoder->Reset();
 	}
 
 	void TeleopPeriodic()
 	{
 
-		SmartDashboard::PutNumber("Total Distance", encoder->GetDistance());
-		SmartDashboard::PutNumber("Distance per Second", encoder->GetRate());
+		SmartDashboard::PutNumber("Total Distance, left", leftEncoder->GetDistance());
+		SmartDashboard::PutNumber("Max Distance per Second, left", leftEncoder->GetRate());
 
+		SmartDashboard::PutNumber("Total Distance, right", rightEncoder->GetDistance());
+		SmartDashboard::PutNumber("Distance per Second, right", rightEncoder->GetRate());
+
+		SmartDashboard::PutNumber("Total Distance, elevator", elevatorEncoder->GetDistance());
+		SmartDashboard::PutNumber("Distance per Second, elevator", elevatorEncoder->GetRate());
 		/*
 		if (stick->GetRawButton(5)) {
 			Sol->Set(DoubleSolenoid::kForward);
@@ -243,13 +330,13 @@ private:
 
 
 		//Double Solenoid Code
-		if (stick->GetRawButton(3)) {
+		/*if (stick->GetRawButton(3)) {
 			shift->Set(DoubleSolenoid::kForward);
 		};
 
 		if (stick->GetRawButton(4)) {
 			shift->Set(DoubleSolenoid::kReverse);
-		};
+		};*/
 
 
 		Drive->DriveOriented();
