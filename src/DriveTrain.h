@@ -1,6 +1,5 @@
 #ifndef _DRIVETRAIN_H_
 #define _DRIVETRAIN_H_
-
 class DriveTrain {
 	Victor *vic1;
 	Victor *vic2;
@@ -16,8 +15,6 @@ class DriveTrain {
 	bool IsForward;
 	Encoder *leftEncoder;
 	Encoder *rightEncoder;
-
-
 public:
 	DriveTrain();
 	void DriveOriented();
@@ -28,8 +25,5 @@ public:
 	void ReverseControls();
 	void ForwardControls();
 	void AutonomousInit();
-	void TeleopInit();
-	void Right90();
-};
-
+	void TeleopInit();};
 #endif
