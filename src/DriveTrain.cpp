@@ -67,3 +67,16 @@ void DriveTrain::DriveAuto(){
 	myRobot->ArcadeDrive(1.0,0.0,true);}
 void DriveTrain::DriveSet(float speed, float angle){
 	myRobot->ArcadeDrive(speed,angle,true);}
+void DriveTrain::Turn(double speed, bool isRight){
+	if (isRight){
+		vic1->SetSpeed(speed);
+		vic2->SetSpeed(speed);
+		vic3->SetSpeed(speed);
+		vic4->SetSpeed(speed);}
+	else {
+		vic1->SetSpeed(-speed);
+		vic2->SetSpeed(-speed);
+		vic3->SetSpeed(-speed);
+		vic4->SetSpeed(-speed);
+	}
+}

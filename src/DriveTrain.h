@@ -25,5 +25,6 @@ public:
 	void ReverseControls();
 	void ForwardControls();
 	void AutonomousInit();
-	void TeleopInit();};
+	void TeleopInit();
+	void Turn(double,bool);};
 #endif
