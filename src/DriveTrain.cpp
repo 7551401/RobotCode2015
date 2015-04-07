@@ -25,7 +25,7 @@ DriveTrain::DriveTrain(){
 	backwardRobot->SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
 	backwardRobot->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 
-
+	cameraServo = new Servo (6);
 	backwardRobot->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 	IsForward = true;};
 void DriveTrain::AutonomousInit(){
@@ -62,7 +62,22 @@ void DriveTrain::DriveOriented() {
 
 
 	float throttle = getThrottle(.4);
-	myRobot->ArcadeDrive(stick->GetY()*throttle, stick->GetTwist()*throttle,true);
+	float b= .5;
+	float m= 1-b;
+	float y=0;
+	if (stick->GetY()>.2){
+		y= stick->GetY()*m+b;}
+	else if (stick->GetY()<-.2){
+		y= stick->GetY()*m-b;
+	}
+	float c= .4;
+	float n= 1-c;
+	float x=0;
+	if (stick->GetTwist()>.2)
+	 x= stick->GetTwist()*n+c;
+	else if (stick->GetTwist()<-.2)
+			x= stick->GetTwist()*n-c;
+	myRobot->ArcadeDrive(y*throttle, x*throttle,true);
 	if (stick->GetX()<-.33){
 		if (IsForward){
 			vic1->SetSpeed(0.0);
@@ -83,10 +98,12 @@ void DriveTrain::DriveOriented() {
 
 
 			vic2->SetSpeed(0.0);}}
-	if (stick->GetRawButton(5))
+	if (stick->GetRawButton(6)) {
 		ReverseControls();
-	if (stick->GetRawButton(3))
-		ForwardControls();}
+		cameraServo->SetAngle(0);}
+	if (stick->GetRawButton(5)) {
+		ForwardControls();
+		cameraServo->SetAngle(180);}}
 
 
 void DriveTrain::DriveAuto(){

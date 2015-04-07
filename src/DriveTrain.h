@@ -21,6 +21,7 @@ class DriveTrain {
 
 	Encoder *leftEncoder;
 	Encoder *rightEncoder;
+	Servo *cameraServo;
 public:
 	DriveTrain();
 	void DriveOriented();
