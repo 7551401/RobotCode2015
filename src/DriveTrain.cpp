@@ -78,7 +78,7 @@ void DriveTrain::DriveOriented() {
 	else if (stick->GetTwist()<-.2)
 			x= stick->GetTwist()*n-c;
 	myRobot->ArcadeDrive(y*throttle, x*throttle,true);
-	if (stick->GetX()<-.33){
+	/*if (stick->GetX()<-.33){
 		if (IsForward){
 			vic1->SetSpeed(0.0);
 
@@ -97,7 +97,7 @@ void DriveTrain::DriveOriented() {
 			vic1->SetSpeed(0.0);
 
 
-			vic2->SetSpeed(0.0);}}
+			vic2->SetSpeed(0.0);}}*/
 	if (stick->GetRawButton(6)) {
 		ReverseControls();
 		cameraServo->SetAngle(0);}
@@ -107,7 +107,7 @@ void DriveTrain::DriveOriented() {
 
 
 void DriveTrain::DriveAuto(){
-	myRobot->ArcadeDrive(1.0,0.0,true);}
+	myRobot->ArcadeDrive(.6,0.0,true);}
 void DriveTrain::DriveSet(float speed, float angle){
 	myRobot->ArcadeDrive(speed,angle,true);}
 void DriveTrain::Turn(double speed, bool isRight){
