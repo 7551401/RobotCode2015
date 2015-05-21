@@ -1,404 +1,263 @@
+//Imports necessary files for the program to run
 #include "WPILib.h"
 #include "DriveTrain.h"
 #include "SmartDashboard/SendableChooser.h"
 #include "PWM.h"
 
+//This creates the Robot Class and implements an interface called IterativeRobot
+//IterativeRobot goes through each "Periodic" method and calls it every few milliseconds
 class Robot: public IterativeRobot{
+	
+//The following variables are instance variables to be used later in the program
+
 private:
 
-	Gyro *sandwich;
-	Encoder *leftEncoder;
-	Encoder *rightEncoder;
-	LiveWindow *lw;
-	Timer *time;
-	Joystick *stick;
 
-	Joystick *xbox;
-	DriveTrain *Drive;
-	Jaguar *jag1;
-	Jaguar *jag2;
-	Victor *twocan;
-	JoystickButton *button1;
-
-	PWM *LIDAR1;
-
-	JoystickButton *button2;
-	JoystickButton *button3;
-	Timer *timer;
-	SendableChooser *chooser;
-	int AutoCode;
-
-
-
-	double y=0.0;
-	int step=0;
-	double leftStart=0.0;
+	Encoder *leftEncoder; //Pointer to the left Encoder
+	Encoder *rightEncoder; //Pointer to the right Encoder
+	LiveWindow *lw; //Pointer to the Live Window
+	Timer *time; //Pointer to a timer that keeps track of time in seconds
+	Joystick *arcadeStick; //Pointer to the arcade drive controller
+	Joystick *xbox; //Pointer to the xbox controller
+	DriveTrain *Drive; //Pointer to the drive train
+	Jaguar *jag1; //Pointer to one of the elevator motors
+	Jaguar *jag2; //Pointer to the other elevator motor
+	SendableChooser *chooser; //Pointer to the object that allows you to press buttons for each Autonomous program
+	int AutoCode; //Pointer to which Auto program is selected
+	int step=0; //Pointer to the step in each Auto program
+	
+	//Initializes variables for each encoder to keep track of how far they have gone
+	double leftStart=0.0; 
 	double rightStart=0.0;
-	void RobotInit(){
+	
+	//Constructor for the Robot Class; initializes and instantiates necessary objects and variables.
+	void RobotInit()
+	{
+		Drive = new DriveTrain(); //Instantiates a DriveTrain object
+		arcadeStick = new Joystick(0); //Instantiates a Joystick object in USB port 0
+		xbox = new Joystick(1); //Instantiates a Joystick object in USB port 1
+		
+		//reference WPI Lib for encoder parameters
+		leftEncoder = new Encoder (24,25, true, CounterBase:: k4X); //Instantiates an encoder in Ports 24/25
+		rightEncoder = new Encoder (16,17, true, CounterBase:: k4X); //Instantiates an encoder in Ports 16/17
 
-		Drive = new DriveTrain();
-		stick = new Joystick(0);
-		xbox = new Joystick(1);
-		leftEncoder = new Encoder (24,25, true, CounterBase:: k4X); // game robot
-		rightEncoder = new Encoder (16,17, true, CounterBase:: k4X); // game robot
-
-		//leftEncoder = new Encoder (2,3, true, CounterBase:: k4X); // practice robot
-		//rightEncoder = new Encoder (0,1, true, CounterBase:: k4X); // practice robot
-		leftEncoder->SetDistancePerPulse(6.0*3.14/128.0); //game 123.4/891.15
-		rightEncoder->SetDistancePerPulse(6.0*3.14/256.0); //game 123.4/1584.4
+		//Tells each encoder to set the predetermined distance for each tick on the encoder
+		leftEncoder->SetDistancePerPulse(6.0*3.14/128.0); 
+		rightEncoder->SetDistancePerPulse(6.0*3.14/256.0); 
+		
+		//Instantiates a SendableChooser object
 		chooser = new SendableChooser();
 
-
+		//Adds The different autonomous modes to the SendableChooser
+		//Parameters include a string and void therefore needing the (void*) class cast notation
 		chooser->AddDefault("Do nothing \n(Set in avoidable area)", (void*)1);
-		chooser->AddObject("Toucan middle \n(Set middle frame on edge of ramp)" , (void*)2);
-		chooser->AddObject("one can @ start \n(Place elev right under handle)", (void*)3);
-		chooser->AddObject("two totes from landfill\n(Place middle frame on edge of ramp)", (void*)4);
-		chooser->AddObject("One can from platform\n(18 inches away slightly slanted)", (void*)5);
-
-
-		chooser->AddObject("One can from platform ramp\n(Middle frame on edge of ramp", (void*)7);
-		chooser->AddObject("one yellow from start\n(Elevator just over yellow)", (void*)6);
-		chooser->AddObject("Toucan Easy\n(See toucan middle)",(void*)8);
-		chooser->AddObject("Toucan Hard\n(See toucan middle)",(void*)9);
+		chooser->AddObject("One can from middle starting on flat\n(Set middle frame on edge of ramp)" , (void*)2);
+		chooser->AddObject("One can from middle starting on ramp", (void*)3);
+		
+		//Adds the auto modes to the SmartDashboard
 		SmartDashboard::PutData("Autonomous modes", chooser);
+		
+		//Resets the Encoders
 		leftEncoder->Reset();
 		rightEncoder->Reset();
+		
+		//Instantiates both jaguars in ports 4 and 5
 		jag1= new Jaguar(4);
-
-		twocan= new Victor(6);
-
-		sandwich= new Gyro(0);
-		sandwich->InitGyro();
-		sandwich->Reset();
-
 		jag2= new Jaguar(5);
 		}
-	void AutonomousInit(){
+		
+		
+	//The initializer for the Autonomous modes
+	void AutonomousInit()
+	{
+		
+		//Sets the AutoCode to whatever the user selects
 		AutoCode = (int)(chooser->GetSelected());
+		
+		//Creates a timer and starts it
 		time= new Timer();
 		time->Start();
-		sandwich->Reset();
-
+		
+		//Sets the auto code step to 1
 		step=1;
+		
+		//Resets the values of each encoder 
 		leftEncoder->Reset();
 		rightEncoder->Reset();
 		rightStart=0.0;
-		leftStart=0.0;}
+		leftStart=0.0;
+		
+	}
 
-
-	void AutonomousPeriodic(){
-		SmartDashboard::PutNumber("left", leftEncoder->GetDistance());
-		SmartDashboard::PutNumber("right" , rightEncoder->GetDistance());
-		switch(AutoCode){
-			case 1: doNothing();
-
-
+	//This is where whatever happens in Auto occurs
+	void AutonomousPeriodic()
+	{
+		
+		//A switch statement is used to determine which code is selected
+		//If the first case is selected, AutonomousPeriodic() will call the doNothing() program until it is completed
+		switch(AutoCode)
+		{
+			case 1: doNothing(); //Robot Does nothing
 			break;
-			case 2: longArms();
+			case 2: oneCan(); //Robot grabs can from middle (starts on ground)
 			break;
-			case 3: oneTote();
-			break;
-
-
-			case 4: twoTotes();
-			break;
-			case 5: oneCan();
-			break;
-			case 6: both();
-
-
-			break;
-			case 7: sloped();
-			break;
-			case 8: ToucanEasy();
-			break;
-
-			case 9: ToucanHard();
+			case 3: sloped(); //Robot grabs can from middle (starts on ramp)
 			break;
 		}
 	}
-	bool closeArms(double duration, double speed){
+	
+	//Created method with parameters of a duration and a speed
+	//Lifts the elevator arms with the speed for the time alotted
+	//returns a boolean value of whether the task has been completed
+	bool liftArms(double duration, double speed)
+	{
 		bool done= false;
-			if (time->Get()<duration){
-				twocan->SetSpeed(speed);
-
-
-				}
-			else{
-				twocan->SetSpeed(0.0);
-
-				done= true;}
-			return done;}
-	void ToucanHard(){
-
-
-		bool done= false;
-		if (step==1)
-			done= driveDistance(100,.85);//distance not known
-		else if (step==2)
-			done= driveDistance(20, .6); //distance not known
-		else if (step==3)
-			done= liftArms(.5, 1.0); // check to see if cans are hooked
-		else if (step==4)
-			done= driveDistance(20, -.5); //distance not known
-		else if (step==5){
-			done = driveDistance(150,.85); //distance not known
-			closeArms(3.0,1.0);}
-
-		else if (step==6)
-			done= turn(true);
-		else if (step==7)
-			done= driveDistance(42, -.75); //distance not known
-		else if (step==8)
-			done= turn(true);
-		else if (step==9)
-			done= liftArms(1.6,-1.0);//time not known
-		else if (step==10)
-			done= driveDistance(18, -.8); //distance not known
-		else if (step==11)
-			done= liftArms(.5, 1.0); //distance not known*/
-		else
-			doNothing();
-		nextStep(done);}
-	void both(){
-		bool done= false;
-	 if (step==1)
-			done = turn(true);
-		else if (step==2)
-			done= driveDistance(126,.6);
-		else if (step==3)
-			done= turn(true);
-		else
-			doNothing();
-		nextStep(done);}
-	void twoTotes(){
-
-
-		bool done= false;
-		if (step==1)
-			done= driveDistance(22.0,.5);
-		else if (step==2)
-			done= liftArms(1.4,-.75);
-
-
-		else if (step==3)
-			done= driveDistance(36.0,-.6);
-		else if (step==4)
-			done= driveDistance(24.0, -.5);
-		else if (step==5)
-			done= liftArms(1.4, .75);
-		else if (step==6)
-
-			done= driveDistance(16.0, -.45);
-		else if (step==7)
-			done= turn(true);
-		else
-			doNothing();
-
-
-		nextStep(done);}
-	bool liftArms(double duration, double speed){
-		bool done= false;
-		if (time->Get()<duration){
+		if (time->Get()<duration)
+		{
 			jag1->SetSpeed(speed);
-
-
 			jag2->SetSpeed(speed);
-			}
-		else{
+		}
+		else
+		{
 			jag1->SetSpeed(0.0);
 			jag2->SetSpeed(0.0);
-			done= true;}
-		return done;}
-	bool turn(bool isRight){
+			done= true;
+		}
+		return done;
+		
+	}
 
-		SmartDashboard::PutNumber("AngleAuto", sandwich->GetAngle());
-		bool done= false;
-		//double inches= 22.0;
-		//double leftDis= leftEncoder->GetDistance()-leftStart;
-		//double rightDis= rightEncoder->GetDistance()-rightStart;
-		//if (leftDis<inches && leftDis>-inches && rightDis<inches && rightDis>-inches)
-		if (sandwich->GetAngle()<75 && isRight)
-
-			Drive->Turn(.3,isRight);
-		else if (sandwich->GetAngle()>-90 && !isRight)
-			Drive->Turn(.3,isRight);
-		else{
-			Drive->DriveSet(0.0,0.0);
-			done=true;}
-		return done;}
-
-	void ToucanEasy(){
-
-
-			bool done= false;
-			if (step==1)
-				done= driveDistance(100,.85);//distance not known
-			else if (step==2)
-				done= driveDistance(20, .6); //distance not known
-			else if (step==3)
-				done= liftArms(.5, 1.0); // check to see if cans are hooked
-			else if (step==4)
-				done= driveDistance(20, -.5); //distance not known
-			else if (step==5){
-				done = driveDistance(150,.85); //distance not known
-
-				 closeArms(1.0,1.0);}
-			else if (step==6)
-				done= turn(false);
-			else if (step==7)
-				done= driveDistance(42, -.75); //distance not known
-			else if (step==8)
-				done= turn(false);
-			else if (step==9)
-				done= liftArms(1.6,-1.0);//time not known
-			else if (step==10)
-				done= driveDistance(18, -.8); //distance not known
-			else if (step==11)
-				done= liftArms(.5, 1.0); //distance not known*/
-			else
-				doNothing();
-			nextStep(done);}
-	void nextStep(bool done){
-		if (done){
-			step++;
+	//method that takes in a boolean value
+	//if an auto step is done this will cause it to move onto the next step and reset values
+	void nextStep(bool done)
+	{
+		if (done)
+		{
+		  	step++;
 			time->Reset();
-			sandwich->Reset();
 			leftStart=leftEncoder->GetDistance();
-
-
-			rightStart= rightEncoder->GetDistance();}}
-	void oneCan(){
-		bool done= false;
+			rightStart= rightEncoder->GetDistance();
+		}
+	}
+	
+	//Auto Program that picks up one can
+	void oneCan()
+	{
+		bool done= false; //Initializes that the program is not done
+		
+		//If the step is 1, drive 9 inches at a speed of negative .5
 		if (step==1)
+		{
 			done= driveDistance(9,-.5);
-		else if (step==2){
+		}
+		
+		//If the step is 2, stop driving and lift the arms for 3 seconds at a speed of -1
+		else if (step==2)
+		{
 			Drive->DriveSet(0.0,0.0);
-
-
-			done =liftArms(3.0,-1.0);}
+			done =liftArms(3.0,-1.0);
+		}
 		else if (step==3)
+		{
 			done= driveDistance(9,-.5);
-		else if (step==4){
+		}
+		else if (step==4)
+		{
 			done= liftArms(3.0,1.0);
-
-
-			Drive->DriveSet(0.0,0.0);}
+			Drive->DriveSet(0.0,0.0);
+		}
 		else if (step==5)
+		{
 			done= driveDistance(36.0,.75);
+		}
 		else if (step==6)
+		{
 			done= driveDistance(25.0,.5);
-
-
+		}
 		else if (step==7)
+		{
 			done= driveDistance(28.0,.45);
+		}
 		else
-
-
+		{
 			doNothing();
-		nextStep(done);}
-	void sloped(){
+		}
+		nextStep(done); //If the step is done move on to the next step
+	}
+	
+	//Auto Program to pick up a can from the middle starting on the ramp
+	void sloped()
+	{
 	bool done= false;
 	if (step==1)
+	{
 		done= driveDistance(11, -.5);
-	else if (step==2){
+	}
+	else if (step==2)
+	{
 		Drive->DriveSet(0.0,0.0);
-
-
-		done =liftArms(2.7,-1.0);}
+		done =liftArms(2.7,-1.0);
+	}
 	else if (step==3)
+	{
 		done= driveDistance(8,-.5);
-	else if (step==4){
+	}
+	else if (step==4)
+	{
 		done= liftArms(2.5,1.0);
-
-
-		Drive->DriveSet(0.0,0.0);}
+		Drive->DriveSet(0.0,0.0);
+	}
 	else if (step==5)
+	{
 		done= driveDistance(52.0,.75);
+	}
 	else if (step==6)
+	{
 		done= driveDistance(10,.5);
-
-
+	}
 	else if (step==7)
+	{
 		done= driveDistance(5,.5);
-
+	}
 	else
-
+	{
 		doNothing();
+	}
 	nextStep(done);
 	}
-	void doNothing(){
-		Drive->DriveSet(0.0,0.0);}
-	bool driveDistance(int inches, double speed){
-
-
+	
+	//Program that causes the Robot to not drive
+	void doNothing()
+	{
+		Drive->DriveSet(0.0,0.0);
+	}
+	
+	//Function that takes in an amount of inches and a predetermined speed
+	//Tells the Robot to drive at the speed until the amount of inches has been reached on either of the encoders
+	//Returns true when the robot has driven the distance
+	bool driveDistance(int inches, double speed)
+	{
 		bool done = false;
 		double leftDis= leftEncoder->GetDistance()-leftStart;
 		double rightDis= rightEncoder->GetDistance()-rightStart;
 		if (leftDis<inches && leftDis>-inches && rightDis<inches && rightDis>-inches)
+		{
 			Drive->DriveSet(speed,0.0);
-
-
-		else{
+		}
+		else
+		{
 			Drive->DriveSet(0.0,0.0);
-			done=true;}
-		return done;}
+			done=true;
+		}
+		return done;
+	}
 
-	void longArms(){
-
-
-		bool done= false;
-		if (step==1)
-			done= driveDistance(100,.85);//distance not known
-		else if (step==2)
-			done= driveDistance(20, .6); //distance not known
-		else if (step==3)
-			done= liftArms(.5, 1.0); // check to see if cans are hooked
-		else if (step==4)
-			done= driveDistance(20, -.5); //distance not known
-		else if (step==5)
-			done = driveDistance(150,.85); //distance not known
-		/*else if (step==6)
-			done= turn(false);
-		else if (step==7)
-			done= driveDistance(42, -.75); //distance not known
-		else if (step==8)
-			done= turn(false);
-		else if (step==9)
-			done= liftArms(1.6,-1.0);//time not known
-		else if (step==10)
-			done= driveDistance(18, -.8); //distance not known
-		else if (step==11)
-			done= liftArms(.5, 1.0); //distance not known*/
-		else
-			doNothing();
-		nextStep(done);}
-
-
-	void oneTote(){
-
-
-		bool done= false;
-		if (step==1)
-			done= liftArms(1.0,-.75);
-		else if (step==2){
-			done = driveDistance(50, -.75);
-			jag1->SetSpeed(0.0);
-			jag2->SetSpeed(0.0);
-			}
-
-		else if (step==3)
-			done = driveDistance(25, -.5);
-		else if (step==4)
-			done = driveDistance(46, -.4);
-		else
-			doNothing();
-		nextStep(done);}
-	void TeleopInit(){
-
-
+	//Initializes the Teleoperated mode
+	void TeleopInit()
+	{
 		rightEncoder->Reset();
-		leftEncoder->Reset();}
+		leftEncoder->Reset();
+	}
 
 	void TeleopPeriodic(){
 
